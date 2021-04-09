@@ -23,9 +23,11 @@ public class ReferenceTypeSelectorDrawer : PropertyDrawer {
 
     public override float GetPropertyHeight (SerializedProperty property, GUIContent label) {
         var height = EditorGUI.GetPropertyHeight (property, label, true);
-        var targetObject = SerializedPropertyUtil.GetTargetObject (property);
-        if (targetObject != null && property.isExpanded) {
-            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        if (property.hasVisibleChildren && property.isExpanded) {
+            var targetObject = SerializedPropertyUtil.GetTargetObject (property);
+            if (targetObject != null) {
+                height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            }
         }
         return height;
     }
@@ -34,20 +36,28 @@ public class ReferenceTypeSelectorDrawer : PropertyDrawer {
         var typeSelector = attribute as ReferenceTypeSelectorAttribute;
         var targetObject = SerializedPropertyUtil.GetTargetObject (property);
 
-        if (targetObject == null) {
-            var labalPosition = new Rect (position.x, position.y, EditorGUIUtility.labelWidth, position.height);
-            var buttonPosition = new Rect (position.x + EditorGUIUtility.labelWidth + 2, position.y, position.width - EditorGUIUtility.labelWidth - 2, position.height);
-            EditorGUI.LabelField (labalPosition, label);
-            ShowInstanceMenu (buttonPosition, property, typeSelector.baseType, targetObject);
+        if (targetObject != null && property.hasVisibleChildren) {
+            ShowFoldout (position, property, label, typeSelector.baseType, targetObject);
         } else {
-            EditorGUI.PropertyField (position, property, label, true);
-            if (property.isExpanded) {
-                var buttonPosition = new Rect (position.x, position.y + position.height - EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
-                EditorGUI.indentLevel += 1;
-                buttonPosition = EditorGUI.IndentedRect (buttonPosition);
-                EditorGUI.indentLevel -= 1;
-                ShowInstanceMenu (buttonPosition, property, typeSelector.baseType, targetObject);
-            }
+            ShowInline (position, property, label, typeSelector.baseType, targetObject);
+        }
+    }
+
+    void ShowInline (Rect position, SerializedProperty property, GUIContent label, Type baseType, object targetObject) {
+        var labalPosition = new Rect (position.x, position.y, EditorGUIUtility.labelWidth, position.height);
+        var buttonPosition = new Rect (position.x + EditorGUIUtility.labelWidth + 2, position.y, position.width - EditorGUIUtility.labelWidth - 2, position.height);
+        EditorGUI.LabelField (labalPosition, label);
+        ShowInstanceMenu (buttonPosition, property, baseType, targetObject);
+    }
+
+    void ShowFoldout (Rect position, SerializedProperty property, GUIContent label, Type baseType, object targetObject) {
+        EditorGUI.PropertyField (position, property, label, true);
+        if (property.isExpanded) {
+            var buttonPosition = new Rect (position.x, position.y + position.height - EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
+            EditorGUI.indentLevel += 1;
+            buttonPosition = EditorGUI.IndentedRect (buttonPosition);
+            EditorGUI.indentLevel -= 1;
+            ShowInstanceMenu (buttonPosition, property, baseType, targetObject);
         }
     }
 
