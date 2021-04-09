@@ -63,7 +63,7 @@ public class ReferenceTypeSelectorDrawer : PropertyDrawer {
 
     void ShowInstanceMenu (Rect position, SerializedProperty property, Type baseType, object targetObject) {
         var isAbstract = baseType.IsAbstract;
-        var subTypes = baseType.Assembly.GetTypes ().Where (t => baseType.IsAssignableFrom (t) && t != baseType && !t.IsAbstract);
+        var subTypes = baseType.Assembly.GetTypes ().Where (t => baseType.IsAssignableFrom (t) && t != baseType && !t.IsAbstract && !t.IsGenericTypeDefinition);
         var buttonText = (targetObject == null) ? "null" : targetObject.GetType ().Name;
 
         if (GUI.Button (position, buttonText)) {
