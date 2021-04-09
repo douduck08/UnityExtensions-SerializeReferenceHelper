@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,9 +18,10 @@ public static class SerializedPropertyUtil {
         var elements = path.Split ('.');
         foreach (var element in elements) {
             if (element.Contains ("[")) {
-                var elementName = element.Substring (0, element.IndexOf ("["));
-                var index = System.Convert.ToInt32 (element.Substring (element.IndexOf ("[")).Replace ("[", "").Replace ("]", ""));
-                obj = GetValue (obj, elementName, index);
+                var charIndex = element.IndexOf ("[");
+                var elementIndex = System.Convert.ToInt32 (element.Substring (charIndex + 1, element.Length - charIndex - 2));
+                var elementName = element.Substring (0, charIndex);
+                obj = GetValue (obj, elementName, elementIndex);
             } else {
                 obj = GetValue (obj, element);
             }
