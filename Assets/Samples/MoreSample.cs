@@ -13,29 +13,28 @@ public class MoreSample : MonoBehaviour {
         public Color memberInA;
     }
 
-    [System.Serializable]
-    public class ClassB : BaseClass {
-        public GameObject memberInB;
-    }
-
-    [System.Serializable]
-    public class ClassC : BaseClass {
-        [Range (0f, 1f)] public float memberInC;
-    }
-
     [System.Serializable] // cannot serialize in Unity
-    public class ClassD<T> : BaseClass {
+    public class ClassB<T> : BaseClass {
         public T memberInD;
     }
 
     [System.Serializable]
-    public class ClassE : ClassC {
+    public class ClassC : ClassA {
         [Range (1f, 10f)] public float memberInE;
     }
 
     [System.Serializable]
-    public class ClassF : ClassD<Vector3> { }
+    public class ClassD : ClassB<Vector3> { }
 
     [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public BaseClass item;
     [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public List<List<BaseClass>> listList; // cannot serialize in Unity
+    [SerializeReference, ReferenceTypeSelector (typeof (BaseClass), "FilterTest")] public BaseClass filterdItem;
+
+    static IEnumerable<System.Type> FilterTest () {
+        yield return typeof (BaseClass); // not subtype of BaseClass
+        yield return typeof (GameObject); // not subtype of BaseClass
+        yield return typeof (ClassA);
+        yield return typeof (ClassB<int>); // cannot serialize in Unity
+        yield return typeof (ClassC);
+    }
 }
