@@ -95,10 +95,10 @@ public class ReferenceTypeSelectorDrawer : PropertyDrawer {
         EditorGUI.PropertyField (position, property, label, true);
         if (property.isExpanded) {
             var buttonPosition = new Rect (position.x, position.y + position.height - EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
-            EditorGUI.indentLevel += 1;
-            buttonPosition = EditorGUI.IndentedRect (buttonPosition);
-            EditorGUI.indentLevel -= 1;
-            ShowInstanceMenu (buttonPosition, property, typeSelector, targetObject);
+            using (new EditorGUI.IndentLevelScope (1)) {
+                buttonPosition = EditorGUI.IndentedRect (buttonPosition);
+                ShowInstanceMenu (buttonPosition, property, typeSelector, targetObject);
+            }
         }
     }
 

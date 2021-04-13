@@ -437,6 +437,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item:
     id: 0
+  filterdItem:
+    id: 0
+  list: []
+  reorderableList: []
   references:
     version: 1
     00000000:

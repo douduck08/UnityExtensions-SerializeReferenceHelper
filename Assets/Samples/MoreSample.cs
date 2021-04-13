@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoreSample : MonoBehaviour {
     [System.Serializable]
-    public abstract class BaseClass {
+    public class BaseClass {
         public int memberInBase;
     }
 
@@ -27,14 +27,17 @@ public class MoreSample : MonoBehaviour {
     public class ClassD : ClassB<Vector3> { }
 
     [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public BaseClass item;
-    [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public List<List<BaseClass>> listList; // cannot serialize in Unity
     [SerializeReference, ReferenceTypeSelector (typeof (BaseClass), "FilterTest")] public BaseClass filterdItem;
 
+    [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public List<List<BaseClass>> listList; // cannot serialize in Unity
+    [SerializeReference, ReferenceTypeSelector (typeof (BaseClass))] public List<BaseClass> list;
+    [SerializeReference, ReferenceTypeSelector (typeof (BaseClass)), ReorderableList] public List<BaseClass> reorderableList;
+
     static IEnumerable<System.Type> FilterTest () {
-        yield return typeof (BaseClass); // not subtype of BaseClass
-        yield return typeof (GameObject); // not subtype of BaseClass
+        yield return typeof (BaseClass); // not subtype of BaseClass, will filter out.
+        yield return typeof (GameObject); // not subtype of BaseClass, will filter out.
         yield return typeof (ClassA);
-        yield return typeof (ClassB<int>); // cannot serialize in Unity
+        yield return typeof (ClassB<int>); // cannot serialize in Unity, will filter out.
         yield return typeof (ClassC);
     }
 }
