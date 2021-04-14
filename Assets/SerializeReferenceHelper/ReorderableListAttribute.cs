@@ -65,6 +65,7 @@ public class ReorderableListWarpper {
         serializedProperty = property;
         list = new ReorderableList (property.serializedObject, property, true, true, true, true);
         list.elementHeightCallback = GetListElementHeight;
+        list.drawHeaderCallback = DrawListHeader;
         list.drawElementCallback = DrawListElement;
     }
 
@@ -79,6 +80,10 @@ public class ReorderableListWarpper {
     float GetListElementHeight (int index) {
         var element = serializedProperty.GetArrayElementAtIndex (index);
         return EditorGUI.GetPropertyHeight (element);
+    }
+
+    void DrawListHeader (Rect rect) {
+        EditorGUI.LabelField (rect, serializedProperty.displayName);
     }
 
     void DrawListElement (Rect rect, int index, bool isActive, bool isFocused) {
